@@ -1,34 +1,41 @@
 const db = require('../data/dbConfig'); 
 
-const Projects = {
-  
-  getProjects: async () => {
-    return await db('projects'); 
-  },
 
-  
-  getProjectById: async (id) => {
-    return await db('projects').where({ project_id: id }).first(); 
-  },
-
-  
-  addProject: async (projectData) => {
-    const [project_id] = await db('projects').insert(projectData).returning('project_id'); 
-    return Projects.getProjectById(project_id); 
-  },
+function getProjects() {
+  return db('projects');
+}
 
 
-  updateProject: async (id, changes) => {
-    await db('projects').where({ project_id: id }).update(changes); 
-    return Projects.getProjectById(id); 
-  },
+function getProjectById(id) {
+  return db('projects').where({ id }).first();
+}
 
-  
-  deleteProject: async (id) => {
-    const deleted = await db('projects').where({ project_id: id }).del(); 
-    return deleted > 0; 
-  }
+
+function addProject(project) {
+  return db('projects')
+    .insert(project)
+    .then(([id]) => getProjectById(id));
+}
+
+
+function updateProject(id, changes) {
+  return db('projects')
+    .where({ id })
+    .update(changes)
+    .then(() => getProjectById(id));
+}
+
+
+function deleteProject(id) {
+  return db('projects')
+    .where({ id })
+    .del();
+}
+
+module.exports = {
+  getProjects,
+  getProjectById,
+  addProject,
+  updateProject,
+  deleteProject
 };
-
-module.exports = Projects;
-
