@@ -1,13 +1,12 @@
-exports.up = function(knex) {
-    return knex.schema.createTable('projects', table => {
-      table.increments('id'); 
-      table.string('name').notNullable(); 
-      table.string('description'); 
-      table.boolean('completed').defaultTo(false); 
-    });
-  };
-  
-  exports.down = function(knex) {
-    return knex.schema.dropTableIfExists('projects');
-  };
-  
+exports.up = async function(knex) {
+  await knex.schema.createTable('projects', table => {
+    table.increments('id'); 
+    table.string('name').notNullable(); 
+    table.text('description'); 
+    table.boolean('completed').defaultTo(false); 
+  });
+};
+
+exports.down = async function(knex) {
+  await knex.schema.dropTableIfExists('projects');
+};
