@@ -1,11 +1,11 @@
-exports.up = function(knex) {
-    return knex.schema.createTable('resources', function(table) {
-      table.increments('resource_id'); 
-      table.string('resource_name').notNullable().unique(); 
-    });
-  };
-  
-  exports.down = function(knex) {
-    return knex.schema.dropTableIfExists('resources');
-  };
-  
+exports.up = async function(knex) {
+  await knex.schema.createTable('resources', (table) => {
+    table.increments('resource_id');
+    table.string('resource_name').notNullable().unique(); 
+    table.string('resource_description'); 
+  });
+};
+
+exports.down = async function(knex) {
+  await knex.schema.dropTableIfExists('resources');
+};

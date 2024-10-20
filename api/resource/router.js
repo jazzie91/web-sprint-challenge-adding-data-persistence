@@ -1,6 +1,7 @@
 const express = require('express');
 const ProjectResource = require('../models/ProjectResourcesModel');
 const router = express.Router();
+const db = require('../data/dbConfig');
 
 
 router.get('/', async (req, res) => {
@@ -24,27 +25,36 @@ router.get('/project/:projectId', async (req, res) => {
 });
 
 
-router.get('/resource/:resourceId', async (req, res) => {
-  const { resourceId } = req.params;
+router.get('/', async (req, res) => {
   try {
-    const projects = await ProjectResource.getByResourceId(resourceId);
-    res.status(200).json(projects);
+    const resources = await db('resources'); 
+    
+  
+    res.status(200).json(resources);
   } catch (err) {
-    res.status(500).json({ message: 'Failed to retrieve projects for the resource' });
+    console.error('Error retrieving resources:', err);
+    res.status(500).json({ message: 'Failed to retrieve resources' });
   }
 });
 
 
 router.post('/', async (req, res) => {
-  const assignmentData = req.body;
-  if (!assignmentData.project_id || !assignmentData.resource_id) {
-    return res.status(400).json({ message: 'Project ID and Resource ID are required' });
+  const { resource_name, resource_description } = req.body; 
+
+  if (!resource_name) {
+    return res.status(400).json({ message: 'Resource name is required' });
   }
+
   try {
-    const newAssignment = await ProjectResource.assignResource(assignmentData);
-    res.status(201).json(newAssignment);
+    const [newResource] = await db('resources').insert({
+      resource_name,
+      resource_description: resource_description || null 
+    }).returning('*'); 
+
+    res.status(201).json(newResource); 
   } catch (err) {
-    res.status(500).json({ message: 'Failed to assign resource to project' });
+    console.error('Error creating resource:', err);
+    res.status(500).json({ message: 'Error creating resource' });
   }
 });
 
