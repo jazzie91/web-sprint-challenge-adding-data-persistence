@@ -4,16 +4,6 @@ const router = express.Router();
 const db = require('../data/dbConfig');
 
 
-router.get('/', async (req, res) => {
-  try {
-    const resources = await ProjectResource.getAll();
-    res.status(200).json(resources);
-  } catch (err) {
-    res.status(500).json({ message: 'Failed to retrieve resource assignments' });
-  }
-});
-
-
 router.get('/project/:projectId', async (req, res) => {
   const { projectId } = req.params;
   try {
@@ -23,20 +13,6 @@ router.get('/project/:projectId', async (req, res) => {
     res.status(500).json({ message: 'Failed to retrieve resources for the project' });
   }
 });
-
-
-router.get('/', async (req, res) => {
-  try {
-    const resources = await db('resources'); 
-    
-  
-    res.status(200).json(resources);
-  } catch (err) {
-    console.error('Error retrieving resources:', err);
-    res.status(500).json({ message: 'Failed to retrieve resources' });
-  }
-});
-
 
 router.post('/', async (req, res) => {
   const { resource_name, resource_description } = req.body; 

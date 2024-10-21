@@ -14,32 +14,6 @@ router.get('/', async (req, res) => {
 });
 
 
-router.get('/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const task = await Task.getById(id);
-    if (task) {
-      res.status(200).json(task);
-    } else {
-      res.status(404).json({ message: 'Task not found' });
-    }
-  } catch (err) {
-    res.status(500).json({ message: 'Failed to retrieve task' });
-  }
-});
-
-
-router.get('/project/:projectId', async (req, res) => {
-  const { projectId } = req.params;
-  try {
-    const tasks = await Task.getByProjectId(projectId);
-    res.status(200).json(tasks);
-  } catch (err) {
-    res.status(500).json({ message: 'Failed to retrieve tasks for the project' });
-  }
-});
-
-
 router.post('/', async (req, res) => {
   const { task_description, task_notes, project_id } = req.body;
 

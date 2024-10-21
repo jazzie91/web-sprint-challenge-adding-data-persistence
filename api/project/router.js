@@ -1,22 +1,30 @@
 const express = require('express');
-const Project = require('../models/Project'); 
 const router = express.Router();
-const db = require('../data/dbConfig');
+const db = require('../data/dbConfig'); 
 
 router.get('/', async (req, res) => {
   try {
-    const projects = await Project.getAll(); 
-    
+    const projects = await db('projects'); 
+
+    if (!projects || projects.length === 0) {
+      return res.status(404).json({ message: 'No projects found' });
+    }
+
     const formattedProjects = projects.map(project => ({
       ...project,
       project_completed: project.project_completed === 1, 
     }));
-    res.status(200).json(formattedProjects);
+
+    res.status(200).json(formattedProjects);  
   } catch (err) {
-    console.error('Error retrieving projects:', err);
-    res.status(500).json({ message: 'Failed to retrieve projects' });
+    res.status(500).json({ message: 'Failed to retrieve projects' });  
   }
 });
+
+
+module.exports = router;
+
+
 
 
 
