@@ -3,8 +3,13 @@ const knex = require('../db/knex');
 const Task = {
  
   getAll: async () => {
-    return knex('tasks').select('*');
-  },
+    try {
+      return await knex('tasks').select('*');
+  } catch (error) {
+      console.error('Error retrieving tasks:', error);
+      throw new Error('Could not retrieve tasks');
+  }
+},
 
   
   getById: async (id) => {

@@ -10,6 +10,7 @@ router.get('/project/:projectId', async (req, res) => {
     const resources = await ProjectResource.getByProjectId(projectId);
     res.status(200).json(resources);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: 'Failed to retrieve resources for the project' });
   }
 });
@@ -41,6 +42,7 @@ router.delete('/:projectId/:resourceId', async (req, res) => {
     await ProjectResource.unassignResource(projectId, resourceId);
     res.status(200).json({ message: 'Resource unassigned from project' });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: 'Failed to unassign resource from project' });
   }
 });
