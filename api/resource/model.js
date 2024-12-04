@@ -3,8 +3,13 @@ const knex = require('../db/knex');
 const ProjectResource = {
   
   getAll: async () => {
-    return knex('project_resources').select('*');
-  },
+    try {
+      return await knex('project_resources').select('*');
+  } catch (error) {
+      console.error('Error retrieving project resources:', error);
+      throw new Error('Could not retrieve project resources');
+  }
+},
 
   
   getByProjectId: async (projectId) => {
