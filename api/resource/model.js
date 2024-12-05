@@ -1,43 +1,11 @@
-const knex = require('../db/knex'); 
+const db = require('../../data/dbConfig');
 
-const ProjectResource = {
-  
-  getAll: async () => {
-    try {
-      return await knex('project_resources').select('*');
-  } catch (error) {
-      console.error('Error retrieving project resources:', error);
-      throw new Error('Could not retrieve project resources');
-  }
-},
+function getResources() {
+  return db('resources');
+}
 
-  
-  getByProjectId: async (projectId) => {
-    return knex('project_resources')
-      .join('resources', 'project_resources.resource_id', 'resources.resource_id')
-      .where({ project_id: projectId })
-      .select('resources.*', 'project_resources.quantity', 'project_resources.assigned_date', 'project_resources.notes');
-  },
+function addResource(resource) {
+  return db('resources').insert(resource).returning('*');
+}
 
-  
-  getByResourceId: async (resourceId) => {
-    return knex('project_resources')
-      .join('projects', 'project_resources.project_id', 'projects.id')
-      .where({ resource_id: resourceId })
-      .select('projects.*', 'project_resources.quantity', 'project_resources.assigned_date', 'project_resources.notes');
-  },
-
-  
-  assignResource: async (assignmentData) => {
-    return knex('project_resources').insert(assignmentData).returning('*');
-  },
-
-  
-  unassignResource: async (projectId, resourceId) => {
-    return knex('project_resources')
-      .where({ project_id: projectId, resource_id: resourceId })
-      .del();
-  }
-};
-
-module.exports = ProjectResource;
+module.exports = { getResources, addResource };

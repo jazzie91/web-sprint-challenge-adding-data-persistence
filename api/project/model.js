@@ -1,41 +1,19 @@
-const db = require('../data/dbConfig'); 
+const db = require('../../data/dbConfig');
 
-
-function getProjects() {
-  return db('projects');
+async function getProjects() {
+  const projects = await db('projects');
+  return projects.map((project) => ({
+    ...project,
+    project_completed: project.project_completed === 1,
+  }));
 }
 
-
-function getProjectById(id) {
-  return db('projects').where({ id }).first();
+async function addProject(project) {
+  const [newProject] = await db('projects').insert(project).returning('*');
+  return {
+    ...newProject,
+    project_completed: newProject.project_completed === 1, 
+  };
 }
 
-
-function addProject(project) {
-  return db('projects')
-    .insert(project)
-    .then(([id]) => getProjectById(id));
-}
-
-
-function updateProject(id, changes) {
-  return db('projects')
-    .where({ id })
-    .update(changes)
-    .then(() => getProjectById(id));
-}
-
-
-function deleteProject(id) {
-  return db('projects')
-    .where({ id })
-    .del();
-}
-
-module.exports = {
-  getProjects,
-  getProjectById,
-  addProject,
-  updateProject,
-  deleteProject
-};
+module.exports = { getProjects, addProject };

@@ -1,14 +1,17 @@
 const express = require('express');
-const projects = express.Router();
+const projectRouter = require('./project/router');
+const resourceRouter = require('./resource/router');
+const taskRouter = require('./task/router');
 
 const server = express();
+server.use(express.json());
 
-server.use(express.json()); 
-server.use('/api/projects', projects); 
+server.use('/api/projects', projectRouter);
+server.use('/api/resources', resourceRouter);
+server.use('/api/tasks', taskRouter);
 
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+server.use((err, req, res) => {
+  res.status(500).json({ message: err.message });
 });
 
 module.exports = server;
